@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mario2r</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="viewport">
+    <div id="gameContainer">
+
+      <canvas id="gameCanvas" width="960" height="540"></canvas>
+
+      <!-- HUD -->
+      <div id="hud">
+        <div id="scorePanel" class="hud-panel">
+          <span id="coinIcon" class="coin-icon" aria-hidden="true"></span>
+          <span id="coinCount">00<small>/00</small></span>
+        </div>
+        <div id="invincibleBar" class="invincible-bar hidden">
+          <span class="invincible-label">STAR</span>
+          <div class="invincible-track">
+            <div id="invincibleFill" class="invincible-fill"></div>
+          </div>
+        </div>
+      </div>
+      <button id="muteBtn" class="mute-btn" aria-label="Toggle sound"></button>
+      <div id="bossBar" class="boss-bar hidden">
+        <span class="boss-label">DRAGON</span>
+        <div class="boss-track">
+          <div id="bossFill" class="boss-fill"></div>
+        </div>
+      </div>
+      <!-- Start Screen -->
+      <div id="startScreen" class="screen">
+        <div class="mc-panel">
+          <h1 class="title">Mario2</h1>
+          <p class="subtitle">FIGHT THE ENDER DRAGON</p>
+          <div class="controls">
+            <div class="key-row"><span class="key">A</span><span class="key">D</span> Move Left / Right</div>
+            <div class="key-row"><span class="key wide">SPACE</span> Jump</div>
+          </div>
+          <p class="hint">Collect coins, dodge the spikes, fight ender dragon, reach the flag!</p>
+          <div class="char-select">
+            <p class="char-select-label">CHOOSE YOUR CHARACTER</p>
+            <div id="charGrid" class="char-grid"></div>
+          </div>
+          <button id="startBtn" class="btn">START GAME</button>
+        </div>
+      </div>
+
+      <!-- Game Over Screen -->
+      <div id="gameOverScreen" class="screen hidden">
+        <div class="mc-panel">
+          <h1 class="title over">GAME OVER</h1>
+          <p id="gameOverScore" class="subtitle"></p>
+          <button id="restartBtn" class="btn btn-red">RESTART</button>
+        </div>
+      </div>
+
+      <!-- Win Screen -->
+      <div id="winScreen" class="screen hidden">
+        <div class="mc-panel">
+          <h1 class="title win">LEVEL COMPLETE!</h1>
+          <p id="winScore" class="subtitle"></p>
+          <button id="playAgainBtn" class="btn btn-green">PLAY AGAIN</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script src="game.js"></script>
+</body>
+</html>

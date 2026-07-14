@@ -1,0 +1,415 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+  font-family: "Arial Black", "Arial Bold", Arial, sans-serif;
+}
+
+/* Full-screen black stage that centers the game */
+#viewport {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+/* Locked to a 16:9 box, scaled as large as the window allows (pure CSS, no JS resize needed) */
+#gameContainer {
+  position: relative;
+  width: 100vw;
+  height: 56.25vw;   /* 960:540 = 16:9 */
+  max-height: 100vh;
+  max-width: 177.78vh; /* 16:9 the other way */
+  background: #5C94FC;
+}
+
+#gameCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* HUD */
+#hud {
+  position: absolute;
+  top: 3%;
+  left: 3%;
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.6vw, 20px);
+  pointer-events: none;
+  font-family: "Press Start 2P", "Arial Black", sans-serif;
+}
+
+.hud-panel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.coin-icon {
+  width: clamp(16px, 1.9vw, 24px);
+  height: clamp(16px, 1.9vw, 24px);
+  border-radius: 50%;
+  background: #FFD700;
+  box-shadow:
+    inset -3px -3px 0 #B8860B,
+    inset 2px 2px 0 #FFF3B0,
+    0 0 0 2px #000;
+  flex-shrink: 0;
+}
+
+#coinCount {
+  color: #fff;
+  font-size: clamp(14px, 1.8vw, 22px);
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 0 #000;
+}
+
+#coinCount small {
+  font-size: 0.7em;
+  color: #FFD700;
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  padding: 4%;
+  background-color: #5c3d1f;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+    linear-gradient(45deg, rgba(0, 0, 0, 0.16) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.16) 75%),
+    linear-gradient(45deg, rgba(0, 0, 0, 0.16) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.16) 75%);
+  background-size: 100% 100%, 24px 24px, 24px 24px;
+  background-position: 0 0, 0 0, 12px 12px;
+}
+
+.hidden {
+  display: none;
+}
+
+.mc-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2vw;
+  max-width: 640px;
+  width: 84%;
+  padding: 5% 6%;
+  background: #c6c6c6;
+  box-shadow:
+    inset 3px 3px 0 0 #ffffff,
+    inset -3px -3px 0 0 #4c4c4c,
+    inset 6px 6px 0 0 #e4e4e4,
+    inset -6px -6px 0 0 #2b2b2b,
+    0 0 0 4px #000;
+}
+
+.title {
+  font-family: "Press Start 2P", "Arial Black", sans-serif;
+  font-size: clamp(20px, 3.6vw, 38px);
+  line-height: 1.6;
+  letter-spacing: 1px;
+  color: #fff;
+  text-shadow:
+    4px 4px 0 #414121,
+    2px 2px 0 #000;
+}
+
+.title.over {
+  color: #ff5555;
+  text-shadow:
+    4px 4px 0 #4a1414,
+    2px 2px 0 #000;
+}
+
+.title.win {
+  color: #55ff55;
+  font-size: clamp(16px, 2.8vw, 28px);
+  text-shadow:
+    4px 4px 0 #14401a,
+    2px 2px 0 #000;
+}
+
+.subtitle {
+  font-size: clamp(12px, 1.4vw, 17px);
+  font-weight: normal;
+  font-family: Arial, sans-serif;
+  color: #e8e8e8;
+  text-shadow: 2px 2px 0 #000;
+  max-width: 90%;
+}
+
+.char-select {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 0.4vw;
+}
+
+.char-select-label {
+  font-family: "Press Start 2P", "Arial Black", sans-serif;
+  font-size: clamp(9px, 1vw, 12px);
+  color: #ffff9e;
+  text-shadow: 2px 2px 0 #000;
+  letter-spacing: 1px;
+}
+
+.char-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  max-width: 100%;
+}
+
+.char-card {
+  width: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  background: #8b8b8b;
+  cursor: pointer;
+  box-shadow:
+    inset 2px 2px 0 0 #ffffff,
+    inset -2px -2px 0 0 #3f3f3f,
+    0 0 0 2px #000;
+}
+
+.char-card img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.char-card span {
+  font-family: Arial, sans-serif;
+  font-size: 9px;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000;
+  text-align: center;
+  line-height: 1.1;
+}
+
+.char-card.selected {
+  background: #3b7a3b;
+  box-shadow:
+    inset 2px 2px 0 0 #6fce6f,
+    inset -2px -2px 0 0 #1e401e,
+    0 0 0 3px #FFD700;
+}
+
+.hint {
+  font-size: clamp(11px, 1.2vw, 14px);
+  font-weight: normal;
+  font-family: Arial, sans-serif;
+  color: #ffff9e;
+  text-shadow: 2px 2px 0 #3f3f00;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8vw;
+  background: #8b8b8b;
+  box-shadow:
+    inset 2px 2px 0 0 #ffffff,
+    inset -2px -2px 0 0 #3f3f3f,
+    0 0 0 2px #000;
+  padding: 1.2% 3%;
+}
+
+.key-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: Arial, sans-serif;
+  font-size: clamp(12px, 1.3vw, 15px);
+  color: #fff;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  background: #c6c6c6;
+  color: #000;
+  font-weight: bold;
+  font-size: 13px;
+  box-shadow:
+    inset 2px 2px 0 0 #ffffff,
+    inset -2px -2px 0 0 #7a7a7a,
+    0 0 0 2px #000;
+}
+
+.key.wide {
+  min-width: 84px;
+}
+
+/* Minecraft-style GUI button: flat grey fill, hard pixel bevel, no radius/blur */
+.btn {
+  margin-top: 0.6vw;
+  padding: 14px 30px;
+  font-size: clamp(13px, 1.5vw, 18px);
+  font-family: "Press Start 2P", "Arial Black", Arial, sans-serif;
+  letter-spacing: 1px;
+  color: #fff;
+  text-shadow: 2px 2px 0 #2b2b2b;
+  background: #6b6b6b;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  box-shadow:
+    inset 3px 3px 0 0 #a3a3a3,
+    inset -3px -3px 0 0 #2f2f2f,
+    0 0 0 3px #000;
+  transition: none;
+}
+
+.btn:hover {
+  background: #7c7c7c;
+  color: #ffff9e;
+  box-shadow:
+    inset 3px 3px 0 0 #bcbcbc,
+    inset -3px -3px 0 0 #2f2f2f,
+    0 0 0 3px #000;
+}
+
+.btn:active {
+  transform: translateY(2px);
+  box-shadow:
+    inset 3px 3px 0 0 #2f2f2f,
+    inset -3px -3px 0 0 #a3a3a3,
+    0 0 0 3px #000;
+}
+
+.btn-red {
+  background: #7a3b3b;
+}
+.btn-red:hover {
+  background: #8f4747;
+}
+
+.btn-green {
+  background: #3b7a3b;
+}
+.btn-green:hover {
+  background: #479447;
+}
+
+.mute-btn {
+  position: absolute;
+  top: 3%;
+  right: 3%;
+  pointer-events: auto;
+  width: clamp(30px, 3.4vw, 42px);
+  height: clamp(30px, 3.4vw, 42px);
+  background: #000;
+  border: 2px solid #fff;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.mute-btn:hover {
+  background: #222;
+}
+
+.mute-btn:active {
+  transform: translateY(1px);
+}
+
+.boss-bar {
+  position: absolute;
+  top: 3%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+  font-family: "Press Start 2P", "Arial Black", sans-serif;
+}
+
+.boss-label {
+  color: #fff;
+  font-size: clamp(10px, 1.3vw, 16px);
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.boss-track {
+  width: clamp(120px, 18vw, 260px);
+  height: 16px;
+  background: #000;
+  border: 2px solid #fff;
+  overflow: hidden;
+}
+
+.boss-fill {
+  height: 100%;
+  width: 100%;
+  background: #E52521;
+  transition: width 0.15s ease;
+}
+
+.invincible-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.invincible-label {
+  color: #FFD700;
+  font-size: clamp(9px, 1.1vw, 13px);
+  text-shadow: 2px 2px 0 #000;
+}
+
+.invincible-track {
+  width: 70px;
+  height: 10px;
+  background: #000;
+  border: 2px solid #FFD700;
+  overflow: hidden;
+}
+
+.invincible-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff);
+  background-size: 300% 100%;
+  animation: rainbow-shift 1s linear infinite;
+  width: 100%;
+}
+
+@keyframes rainbow-shift {
+  from { background-position: 0% 0; }
+  to   { background-position: 100% 0; }
+}
